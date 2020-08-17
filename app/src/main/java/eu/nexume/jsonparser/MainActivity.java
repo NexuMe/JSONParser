@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
         protected Void doInBackground(Void... arg0) {
             HttpHandler sh = new HttpHandler();
             // Making a request to url and getting response
-            String url = "https://api.androidhive.info/contacts/";
+            String url = "https://doctrinalocus.web.app/json_contacts.json";
             String jsonStr = sh.makeServiceCall(url);
 
             Log.e(TAG, "Response from url: " + jsonStr);
@@ -69,7 +69,6 @@ public class MainActivity extends AppCompatActivity {
                     String name;
                     String email;
                     String address;
-                    String gender;
                     String mobile;
                     String home;
                     String office;
@@ -81,7 +80,6 @@ public class MainActivity extends AppCompatActivity {
                         name = c.getString("name");
                         email = c.getString("email");
                         address = c.getString("address");
-                        gender = c.getString("gender");
 
                         // Phone node is JSON Object
                         phone = c.getJSONObject("phone");
@@ -97,8 +95,9 @@ public class MainActivity extends AppCompatActivity {
 //                        contact.put("name", name);
 //                        contact.put("email", email);
 //                        contact.put("mobile", mobile);
-
-                        ContactsModel itemContacts = new ContactsModel(name, email, mobile);
+//                        contact.put("address", address);
+//
+                        ContactsModel itemContacts = new ContactsModel(name, email, mobile, address);
                         // adding contact to contact list
                         contactList.add(itemContacts);
                     }
@@ -148,14 +147,15 @@ public class MainActivity extends AppCompatActivity {
                     String itemName = String.valueOf(currentContact.getName());
                     String itemEmail = String.valueOf(currentContact.getEmail());
                     String itemMobile = String.valueOf(currentContact.getMobile());
+                    String itemAddress = String.valueOf(currentContact.getAddress());
 
                     Toast.makeText(MainActivity.this, itemName, Toast.LENGTH_SHORT).show();
                 }
             });
 
 //            ListAdapter adapter = new SimpleAdapter(MainActivity.this, contactList,
-//                    R.layout.list_item, new String[]{"name", "email", "mobile"},
-//                    new int[]{R.id.name, R.id.email, R.id.mobile});
+//                    R.layout.list_item, new String[]{"name", "email", "mobile", "address"},
+//                    new int[]{R.id.name, R.id.email, R.id.mobile, R.id.address});
 //            lv.setAdapter(adapter);
         }
     }

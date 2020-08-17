@@ -11,8 +11,8 @@ import java.util.List;
 
 public class ContactsAdapter extends ArrayAdapter<ContactsModel> {
 
-    public ContactsAdapter(Context context, List<ContactsModel> earthquakes) {
-        super(context, 0, earthquakes);
+    public ContactsAdapter(Context context, List<ContactsModel> contacts) {
+        super(context, 0, contacts);
     }
 
     @Override
@@ -25,16 +25,19 @@ public class ContactsAdapter extends ArrayAdapter<ContactsModel> {
                     R.layout.list_item, parent, false);
         }
 
-        ContactsModel currentEarthquake = getItem(position);
+        ContactsModel currentContact = getItem(position);
 
         TextView nameView = listItemView.findViewById(R.id.name);
-        nameView.setText(currentEarthquake.getName());
+        nameView.setText(currentContact.getName());
 
         TextView emailView = listItemView.findViewById(R.id.email);
-        emailView.setText(currentEarthquake.getEmail());
+        emailView.setText(currentContact.getEmail());
 
-        TextView dateView = listItemView.findViewById(R.id.mobile);
-        dateView.setText(currentEarthquake.getMobile());
+        TextView mobileView = listItemView.findViewById(R.id.mobile);
+        mobileView.setText(currentContact.getMobile());
+
+        TextView addressView = listItemView.findViewById(R.id.address);
+        addressView.setText(currentContact.getAddress());
 
         return listItemView;
     }
