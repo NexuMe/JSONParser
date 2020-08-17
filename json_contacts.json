@@ -1,0 +1,114 @@
+{
+    "contacts": [
+        {
+                "id": "c001",
+                "name": "Albert Einstein",
+                "email": "albert@gmail.com",
+                "address": "Ulm, Germany",
+                "phone": {
+                    "mobile": "+359 000000000",
+                    "home": "00 000000",
+                    "office": "00 000000"
+                }
+        },
+        {
+                "id": "c002",
+                "name": "Marie Curie",
+                "email": "marie_curie@gmail.com",
+                "address": "Warsaw, Poland",
+                "phone": {
+                    "mobile": "+359 000000000",
+                    "home": "00 000000",
+                    "office": "00 000000"
+                }
+        },
+        {
+                "id": "c003",
+                "name": "Isaac Newton",
+                "email": "isaac_newton@gmail.com",
+                "address": "Woolsthorpe-by-Colsterworth, England",
+                "phone": {
+                    "mobile": "+359 000000000",
+                    "home": "00 000000",
+                    "office": "00 000000"
+                }
+        },
+        {
+                "id": "c004",
+                "name": "Charles Darwin",
+                "email": "charles_darwin@gmail.com",
+                "address": "Shrewsbury, England",
+                "phone": {
+                    "mobile": "+359 000000000",
+                    "home": "00 000000",
+                    "office": "00 000000"
+                }
+        },
+        {
+                "id": "c005",
+                "name": "Nikola Tesla",
+                "email": "nikola@gmail.com",
+                "address": "Smiljan, Croatia",
+                "phone": {
+                    "mobile": "+359 0000000000",
+                    "home": "00 000000",
+                    "office": "00 000000"
+                }
+        },
+        {
+                "id": "c006",
+                "name": "Galileo Galilei",
+                "email": "galileo@gmail.com",
+                "address": "Pisa, Italy",
+                "phone": {
+                    "mobile": "+359 000000000",
+                    "home": "00 000000",
+                    "office": "00 000000"
+                }
+        },
+        {
+                "id": "c007",
+                "name": "Ada Lovelace",
+                "email": "ada_lovelace@gmail.com",
+                "address": "London, England",
+                "phone": {
+                    "mobile": "+359 000000000",
+                    "home": "00 000000",
+                    "office": "00 000000"
+                }
+        },
+        {
+                "id": "c008",
+                "name": "Pythagoras",
+                "email": "pythagoras@gmail.com",
+                "address": "Samos, Greece",
+                "phone": {
+                    "mobile": "+359 000000000",
+                    "home": "00 000000",
+                    "office": "00 000000"
+                }
+        },
+        {
+                "id": "c009",
+                "name": "Stephen Hawking",
+                "email": "stephen_hawking@gmail.com",
+                "address": "Oxford, England",
+                "phone": {
+                    "mobile": "+359 000000000",
+                    "home": "00 000000",
+                    "office": "00 000000"
+                }
+        },
+        {
+                "id": "c010",
+                "name": "Dmitri Mendeleev",
+                "email": "mendeleev@gmail.com",
+                "address": "Verkhnie Aremzyani, Russia",
+                "phone": {
+                    "mobile": "+359 000000000",
+                    "home": "00 000000",
+                    "office": "00 000000"
+                }
+        }
+    ]
+}
