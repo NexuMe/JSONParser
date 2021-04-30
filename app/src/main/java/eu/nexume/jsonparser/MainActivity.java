@@ -1,14 +1,13 @@
 package eu.nexume.jsonparser;
 
-import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ListAdapter;
 import android.widget.ListView;
-import android.widget.SimpleAdapter;
 import android.widget.Toast;
 
 import org.json.JSONArray;
@@ -16,18 +15,20 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 public class MainActivity extends AppCompatActivity {
 
-    private String TAG = MainActivity.class.getSimpleName();
+    private final String TAG = MainActivity.class.getSimpleName();
     private ListView lv;
     private ContactsAdapter adapter;
 
     //    ArrayList<HashMap<String, String>> contactList;
 
     List<ContactsModel> contactList;
+    private Handler mainThreadHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,58 +37,56 @@ public class MainActivity extends AppCompatActivity {
 
         contactList = new ArrayList<>();
         lv = findViewById(R.id.list);
-
-        new GetContacts().execute();
+        Executor executor = Executors.newSingleThreadExecutor();
+        mainThreadHandler = new Handler(Looper.getMainLooper());
+        executor.execute(getContacts);
     }
 
-    private class GetContacts extends AsyncTask<Void, Void, Void> {
+    private final Runnable getContacts = new Runnable() {
         @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            Toast.makeText(MainActivity.this, "Json Data is downloading", Toast.LENGTH_LONG).show();
-        }
+        public void run() {
 
-        @Override
-        protected Void doInBackground(Void... arg0) {
-            HttpHandler sh = new HttpHandler();
-            // Making a request to url and getting response
-            String url = "https://doctrinalocus.web.app/json_contacts.json";
-            String jsonStr = sh.makeServiceCall(url);
+            try {
 
-            Log.e(TAG, "Response from url: " + jsonStr);
-            if (jsonStr != null) {
-                try {
-                    JSONObject jsonObj = new JSONObject(jsonStr);
+                HttpHandler sh = new HttpHandler();
+                // Making a request to url and getting response
+                String url = "https://doctrinalocus.web.app/json_contacts.json";
+                String jsonStr = sh.makeServiceCall(url);
 
-                    // Getting JSON Array node
-                    JSONArray contacts = jsonObj.getJSONArray("contacts");
+                Log.e(TAG, "Response from url: " + jsonStr);
+                if (jsonStr != null) {
+                    try {
+                        JSONObject jsonObj = new JSONObject(jsonStr);
 
-                    // Variables for JSON parsing
-                    JSONObject c;
-                    JSONObject phone;
-                    String id;
-                    String name;
-                    String email;
-                    String address;
-                    String mobile;
-                    String home;
-                    String office;
+                        // Getting JSON Array node
+                        JSONArray contacts = jsonObj.getJSONArray("contacts");
 
-                    // looping through All Contacts
-                    for (int i = 0; i < contacts.length(); i++) {
-                        c = contacts.getJSONObject(i);
-                        id = c.getString("id");
-                        name = c.getString("name");
-                        email = c.getString("email");
-                        address = c.getString("address");
+                        // Variables for JSON parsing
+                        JSONObject c;
+                        JSONObject phone;
+                        String id;
+                        String name;
+                        String email;
+                        String address;
+                        String mobile;
+                        String home;
+                        String office;
 
-                        // Phone node is JSON Object
-                        phone = c.getJSONObject("phone");
-                        mobile = phone.getString("mobile");
-                        home = phone.getString("home");
-                        office = phone.getString("office");
+                        // looping through All Contacts
+                        for (int i = 0; i < contacts.length(); i++) {
+                            c = contacts.getJSONObject(i);
+                            id = c.getString("id");
+                            name = c.getString("name");
+                            email = c.getString("email");
+                            address = c.getString("address");
 
-                        // tmp hash map for single contact
+                            // Phone node is JSON Object
+                            phone = c.getJSONObject("phone");
+                            mobile = phone.getString("mobile");
+                            home = phone.getString("home");
+                            office = phone.getString("office");
+
+                            // tmp hash map for single contact
 //                        HashMap<String, String> contact = new HashMap<>();
 //
 //                        // adding each child node to HashMap key => value
@@ -97,66 +96,85 @@ public class MainActivity extends AppCompatActivity {
 //                        contact.put("mobile", mobile);
 //                        contact.put("address", address);
 //
-                        ContactsModel itemContacts = new ContactsModel(name, email, mobile, address);
-                        // adding contact to contact list
-                        contactList.add(itemContacts);
+                            ContactsModel itemContacts = new ContactsModel(name, email, mobile, address);
+                            // adding contact to contact list
+                            contactList.add(itemContacts);
+                        }
+                    } catch (final JSONException e) {
+                        Log.e(TAG, "Json parsing error: " + e.getMessage());
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(getApplicationContext(),
+                                        "Json parsing error: " + e.getMessage(),
+                                        Toast.LENGTH_LONG).show();
+                            }
+                        });
+
                     }
-                } catch (final JSONException e) {
-                    Log.e(TAG, "Json parsing error: " + e.getMessage());
+
+                } else {
+                    Log.e(TAG, "Couldn't get json from server.");
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             Toast.makeText(getApplicationContext(),
-                                    "Json parsing error: " + e.getMessage(),
+                                    "Couldn't get json from server. Check LogCat for possible errors!",
                                     Toast.LENGTH_LONG).show();
                         }
                     });
-
                 }
 
-            } else {
-                Log.e(TAG, "Couldn't get json from server.");
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(getApplicationContext(),
-                                "Couldn't get json from server. Check LogCat for possible errors!",
-                                Toast.LENGTH_LONG).show();
-                    }
-                });
+                mainThreadHandler.post(postContacts);
+
+            } catch (Exception e) {
+                e.printStackTrace();
             }
 
-            return null;
         }
+    };
 
+    private final Runnable postContacts = new Runnable() {
         @Override
-        protected void onPostExecute(Void result) {
-            super.onPostExecute(result);
-            adapter = new ContactsAdapter(
-                    MainActivity.this, contactList);
-            lv.setAdapter(adapter);
+        public void run() {
 
-            // Set setOnItemClickListener on ListView
-            // to make the list items clickable
-            lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            try {
 
-                    ContactsModel currentContact = adapter.getItem(position);
+                adapter = new ContactsAdapter(
+                        MainActivity.this, contactList);
+                lv.setAdapter(adapter);
 
-                    String itemName = String.valueOf(currentContact.getName());
-                    String itemEmail = String.valueOf(currentContact.getEmail());
-                    String itemMobile = String.valueOf(currentContact.getMobile());
-                    String itemAddress = String.valueOf(currentContact.getAddress());
+                // Set setOnItemClickListener on ListView
+                // to make the list items clickable
+                lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                    Toast.makeText(MainActivity.this, itemName, Toast.LENGTH_SHORT).show();
-                }
-            });
+                        ContactsModel currentContact = adapter.getItem(position);
+
+                        String itemName = String.valueOf(currentContact.getName());
+                        String itemEmail = String.valueOf(currentContact.getEmail());
+                        String itemMobile = String.valueOf(currentContact.getMobile());
+                        String itemAddress = String.valueOf(currentContact.getAddress());
+
+                        Toast.makeText(MainActivity.this, itemName, Toast.LENGTH_SHORT).show();
+                    }
+                });
 
 //            ListAdapter adapter = new SimpleAdapter(MainActivity.this, contactList,
 //                    R.layout.list_item, new String[]{"name", "email", "mobile", "address"},
 //                    new int[]{R.id.name, R.id.email, R.id.mobile, R.id.address});
 //            lv.setAdapter(adapter);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
         }
+    };
+
+    @Override
+    protected void onPostResume() {
+        super.onPostResume();
     }
 }
