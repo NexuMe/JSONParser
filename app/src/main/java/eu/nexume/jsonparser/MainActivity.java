@@ -3,7 +3,7 @@ package eu.nexume.jsonparser;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -37,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
 
         contactList = new ArrayList<>();
         lv = findViewById(R.id.list);
+
         Executor executor = Executors.newSingleThreadExecutor();
         mainThreadHandler = new Handler(Looper.getMainLooper());
         executor.execute(getContacts);
@@ -137,9 +138,7 @@ public class MainActivity extends AppCompatActivity {
     private final Runnable postContacts = new Runnable() {
         @Override
         public void run() {
-
             try {
-
                 adapter = new ContactsAdapter(
                         MainActivity.this, contactList);
                 lv.setAdapter(adapter);

@@ -2,13 +2,13 @@ package eu.nexume.jsonparser;
 
 public class ContactsModel {
 
-    private String mName;
+    private final String mName;
 
-    private String mEmail;
+    private final String mEmail;
 
-    private String mMobile;
+    private final String mMobile;
 
-    private String mAddress;
+    private final String mAddress;
 
     public ContactsModel(String name, String email, String mobile, String address) {
         mName = name;
